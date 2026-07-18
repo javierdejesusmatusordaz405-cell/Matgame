@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculo Yermista</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="panel">
+      <div id="loadingView" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p class="loading-text">Preparando ejercicio...</p>
+        </div>
+      </div>
+      <div id="registerView" class="view active">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">Registro</h2>
+            <p class="subtitle">Antes de empezar, elige cómo te llamarás. Este nombre se guardará en este navegador.</p>
+          </div>
+
+          <div class="register-form">
+            <label class="register-label" for="playerNameInput">¿Qué nombre te pondrás?</label>
+            <input id="playerNameInput" class="register-input" type="text" maxlength="24" placeholder="Escribe tu nombre" autocomplete="name">
+            <button id="registerContinueButton" class="primary-action">Entrar al juego</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="changeNameView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">¿Quieres cambiar tu nombre?</h2>
+            <p class="subtitle">Escribe el nuevo nombre que deseas usar y guárdalo.</p>
+          </div>
+
+          <div class="register-form">
+            <label class="register-label" for="newPlayerNameInput">Nombre nuevo</label>
+            <input id="newPlayerNameInput" class="register-input" type="text" maxlength="24" placeholder="Escribe tu nuevo nombre" autocomplete="name">
+            <div class="action-row">
+              <button id="saveNameButton" class="primary-action">Guardar</button>
+              <button id="cancelNameButton" class="secondary-action">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lobbyView" class="view">
+        <div class="card">
+          <div class="brand">
+            <img class="brain-logo" src="./logo5.png" alt="Logo Calculo Yermista">
+            <div>
+            <h2 class="title glass-title">Cálculo y Agilidad Mental Yermista</h2>
+               <br>
+              <p style="font-size: 20px;">Creado por:</p>
+              <br>
+              <a style="font-size: 30px;" class="title glass-title">Javier de Jesús Matus Ordaz</a>
+               <br>
+               <br>
+
+              <p class="subtitle">Pon a prueba tu velocidad mental, mejora tu concentración y supera tus propios límites en cada partida.</p>
+              <p id="playerNameDisplay" class="player-name">Registrando tu nombre...</p>
+            </div>
+            <div class="record-chip">Mejor récord: <span id="lobbyBestScore">0</span></div>
+            <div class="record-chip">Puntaje acumulado: <span id="lobbyTotalScore">0</span></div>
+          </div>
+
+          <ol class="mode-list">
+            <li class="mode-item"><button class="mode-button" data-mode="sum1digit"><i>Sumas 1 dígito</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sum2digits"><i>Sumas 2 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sum3digits"><i>Sumas 3 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sum"><i>Sumas 1-10</i></button></li>
+            <li class="mode-item"><button class="mode-button complement-button" data-mode="comp1">Complemento a 1</button></li>
+            <li class="mode-item"><button class="mode-button complement-button" data-mode="comp10">Complemento a 10</button></li>
+            <li class="mode-item"><button class="mode-button complement-button" data-mode="comp100">Complemento a 100</button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sub1digit"><i>Restas 1 dígito</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sub2digits"><i>Restas 2 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sub3digits"><i>Restas 3 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="sub"><i>Restas 1-10</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul"><i>Multiplicaciones 1-10</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul1digit"><i>Multiplicaciones 1 dígito</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul2digits"><i>Multiplicaciones 2 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mulDouble2digits"><i>Doblar 2 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul3digits"><i>Multiplicaciones 3 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul67"><i>Multiplicaciones por 67</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul05"><i>Multiplicaciones 0-5 (60 seg)</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul06"><i>Multiplicaciones 0-6</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="mul05_120"><i>Multiplicaciones 0-5 (120 seg)</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div"><i>Divisiones 1-10</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div1digit"><i>Divisiones 1 dígito</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div2digits"><i>Divisiones 2 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div3digits"><i>Divisiones 3 dígitos</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div05"><i>Divisiones 0-5</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="divHalf"><i>Divisiones 0.5</i></button></li>
+            <li class="mode-item"><button class="mode-button" data-mode="div06"><i>Divisiones 0-6</i></button></li>
+          </ol>
+
+          <div class="action-row">
+            <button id="recordButton" class="secondary-action">Registro</button>
+          </div>
+
+          <div class="competition-card">
+            <div class="competition-header">
+              <h3 class="competition-title">Competencia LAN</h3>
+              <button id="competitionButton" class="primary-action">Competir</button>
+            </div>
+            <p class="competition-subtitle">Elige un usuario del catálogo para desafiarlo.</p>
+            <div id="userCatalog" class="user-catalog"></div>
+          </div>
+
+          <button id="settingsButton" class="settings-button" aria-label="Cambiar nombre de usuario">⚙️ Ajustes</button>
+        </div>
+      </div>
+
+      <div id="gameView" class="view">
+        <div class="game-shell">
+          <div class="game-top">
+            <div class="pill">
+              <span class="pill-label">Modo</span>
+              <span id="modeName" class="pill-value">Sumas 1-10</span>
+            </div>
+            <div class="pill">
+              <span class="pill-label">Puntaje</span>
+              <span id="liveScore" class="pill-value">0</span>
+            </div>
+          </div>
+
+          <div class="card operation-card">
+            <div class="operation-stack">
+              <div id="standardOperation" class="operation-display active">
+                <div id="operationText" class="operation-text">3 + 4</div>
+                <input id="answerInput" class="answer-input" type="number" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="?" aria-label="Respuesta">
+              </div>
+
+              <div id="complementOperation" class="operation-display complement-display">
+                <div class="complement-row">
+                  <span id="complementPrefix" class="operation-text">7 +</span>
+                  <input id="complementInput" class="answer-input complement-input" type="number" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="?" aria-label="Complemento a 10">
+                  <span id="complementSuffix" class="operation-text">= 10</span>
+                </div>
+              </div>
+
+              <p class="helper-text">Escribe tu respuesta y presiona Enter para pasar a la siguiente operación.</p>
+            </div>
+          </div>
+
+          <div class="timer-wrap">
+            <div class="timer-bar" aria-label="Tiempo restante">
+              <div id="timerFill" class="timer-fill"></div>
+            </div>
+            <p class="helper-text">Tiempo restante: <span id="timeLeftText">60.0</span>s</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">Tiempo terminado</h2>
+            <p class="subtitle">Revisa tu puntaje y vuelve al lobby para seguir practicando.</p>
+          </div>
+
+          <div class="result-grid">
+            <div class="result-box">
+              <span class="pill-label">Puntaje total</span>
+              <span id="finalScore" class="result-number">0</span>
+            </div>
+            <div class="result-box">
+              <span class="pill-label">Mejor récord</span>
+              <span id="bestScore" class="result-number">0</span>
+            </div>
+            <div class="result-box">
+              <span class="pill-label">Puntaje acumulado</span>
+              <span id="totalScore" class="result-number">0</span>
+            </div>
+          </div>
+
+          <p id="resultInstructions" class="view-instructions">Presiona "Volver al lobby" para elegir otro módulo o revisar tu registro.</p>
+
+          <div class="action-row">
+            <button id="retryButton" class="primary-action">Reintentar</button>
+            <button id="backToLobbyButton" class="secondary-action">Volver al lobby</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="confirmView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title" id="confirmModeName">Sumas 1-10</h2>
+            <p class="subtitle">¿Estás listo para empezar? Tienes 60 segundos.</p>
+          </div>
+
+          <p id="confirmInstructions" class="view-instructions">Lee las indicaciones antes de comenzar. Presiona "Comenzar" para iniciar el entrenamiento.</p>
+
+          <div class="action-row">
+            <button id="confirmStartButton" class="primary-action">Comenzar</button>
+            <button id="confirmBackButton" class="secondary-action">Regresar al lobby</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="countdownView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title" id="countdownModeTitle">Sumas 1-10</h2>
+          </div>
+
+          <div class="countdown-content">
+            <div id="countdownNumber" class="countdown-timer">3</div>
+            
+            <div class="explanation-section">
+              <h3 id="explanationTitle" class="explanation-title">Cómo funciona:</h3>
+              <p id="explanationText" class="explanation-text">Aquí irá la explicación del ejercicio.</p>
+              
+              <div class="example-section">
+                <h4 class="example-title">Ejemplo:</h4>
+                <div id="exampleBox" class="example-box">
+                  <p id="exampleText">2 + 3 = ?</p>
+                  <p id="exampleAnswer">Respuesta: 5</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="competitionSetupView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">Configuración de competencia</h2>
+            <p id="competitionTargetText" class="subtitle">Elige los módulos y el tiempo para este duelo.</p>
+          </div>
+
+          <div class="competition-setup">
+            <div class="module-picker">
+              <h3 class="competition-title">Módulos</h3>
+              <div id="moduleOptions" class="module-options"></div>
+            </div>
+
+            <div class="time-picker">
+              <h3 class="competition-title">Tiempo</h3>
+              <label class="register-label" for="competitionTimeInput">Segundos</label>
+              <input id="competitionTimeInput" class="register-input" type="number" min="60" max="200" value="60">
+            </div>
+
+            <div class="action-row">
+              <button id="startCompetitionButton" class="primary-action">Iniciar competencia</button>
+              <button id="cancelCompetitionButton" class="secondary-action">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="challengeView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">¡Te han retado!</h2>
+            <p id="challengeInfoText" class="subtitle">Un jugador quiere competir contigo.</p>
+          </div>
+
+          <div class="action-row">
+            <button id="acceptChallengeButton" class="primary-action">Aceptar</button>
+            <button id="declineChallengeButton" class="secondary-action">Rechazar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="recordView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">Registro de Entrenamientos</h2>
+            <p class="subtitle">Tu progreso en cada módulo</p>
+          </div>
+
+          <div id="statsContainer" class="stats-container">
+            <!-- Se llenará dinámicamente con JavaScript -->
+          </div>
+
+          <div class="action-row">
+            <button id="recordBackButton" class="secondary-action">Volver al lobby</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./perfil.js"></script>
+  <script src="./script.js"></script>
+  <br>
+  <b>Fecha de creacion:</b>
+   <p>El 17 de abril del 2026</p>
+  <b>Grado y Grupo:</b>
+   <p>3° A</p>
+  <b>Escuela:</b>
+   <p>Escuela secundaria tecnica Yermo y Parres</p>
+</body>
+</html>
