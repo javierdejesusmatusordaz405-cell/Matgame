@@ -82,7 +82,10 @@
     competitionOpponentId: null,
     competitionOpponentName: null,
     pendingChallenge: null,
-    pendingIncomingChallenge: null
+    pendingIncomingChallenge: null,
+    challengeMode: false,
+    challengeModules: [],
+    challengeModuleIndex: 0
   };
 
   const modeConfig = {
@@ -602,6 +605,9 @@
     state.competitionModules = modules;
     state.competitionTime = time;
     state.mode = modules[0];
+    state.challengeMode = true;
+    state.challengeModules = modules;
+    state.challengeModuleIndex = 0;
     state.score = 0;
     state.totalTime = time;
     state.timeLeft = time;
@@ -781,10 +787,22 @@
   }
 
   function nextProblem() {
-    const problem = modeConfig[state.mode].nextProblem();
+    const challengeModes = state.challengeMode && state.challengeModules.length > 0
+      ? state.challengeModules
+      : [state.mode];
+
+    const activeMode = challengeModes[state.challengeModuleIndex % challengeModes.length];
+    state.mode = activeMode;
+    state.challengeModuleIndex = (state.challengeModuleIndex + 1) % challengeModes.length;
+
+    const problem = modeConfig[activeMode].nextProblem();
     state.currentAnswer = problem.answer;
 
-    if (modeConfig[state.mode].display === "complement") {
+    if (modeName) {
+      modeName.textContent = modeConfig[activeMode].label;
+    }
+
+    if (modeConfig[activeMode].display === "complement") {
       complementPrefix.textContent = problem.prefix;
       complementSuffix.textContent = problem.suffix;
       complementInput.value = "";
@@ -792,6 +810,8 @@
       operationText.textContent = problem.text;
       answerInput.value = "";
     }
+
+    setDisplayMode(activeMode);
   }
 
   function refreshScore() {
@@ -906,8 +926,18 @@
     state.running = true;
     state.lastTimestamp = 0;
 
-    modeName.textContent = modeConfig[mode].label;
-    setDisplayMode(mode);
+    if (!state.challengeMode) {
+      state.challengeModules = [];
+      state.challengeModuleIndex = 0;
+    }
+
+    const activeMode = state.challengeMode && state.challengeModules.length > 0
+      ? state.challengeModules[0]
+      : mode;
+
+    state.mode = activeMode;
+    modeName.textContent = modeConfig[activeMode].label;
+    setDisplayMode(activeMode);
     refreshScore();
     updateTimerVisual();
     nextProblem();
