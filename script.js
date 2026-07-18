@@ -14,7 +14,8 @@
     confirm: document.getElementById("confirmView"),
     countdown: document.getElementById("countdownView"),
     record: document.getElementById("recordView"),
-    challengeView: document.getElementById("challengeView")
+    challengeView: document.getElementById("challengeView"),
+    challengePending: document.getElementById("challengePendingView")
   };
 
   const lobbyBestScore = document.getElementById("lobbyBestScore");
@@ -33,7 +34,6 @@
   const finalScore = document.getElementById("finalScore");
   const bestScore = document.getElementById("bestScore");
   const totalScore = document.getElementById("totalScore");
-  const retryButton = document.getElementById("retryButton");
   const backToLobbyButton = document.getElementById("backToLobbyButton");
   const modeButtons = document.querySelectorAll(".mode-button");
   const confirmModeName = document.getElementById("confirmModeName");
@@ -62,8 +62,10 @@
   const startCompetitionButton = document.getElementById("startCompetitionButton");
   const cancelCompetitionButton = document.getElementById("cancelCompetitionButton");
   const challengeInfoText = document.getElementById("challengeInfoText");
+  const challengePendingText = document.getElementById("challengePendingText");
   const acceptChallengeButton = document.getElementById("acceptChallengeButton");
   const declineChallengeButton = document.getElementById("declineChallengeButton");
+  const pendingBackToLobbyButton = document.getElementById("pendingBackToLobbyButton");
 
   const state = {
     mode: null,
@@ -456,6 +458,46 @@
     totalScore.textContent = storedTotal;
   }
 
+  function getChallengeRanking() {
+    try {
+      return JSON.parse(localStorage.getItem("calculoYermistaChallengeRanking") || "[]");
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveChallengeRankingEntry(name, score) {
+    const history = getChallengeRanking();
+    const safeName = String(name || "Jugador").trim() || "Jugador";
+    history.push({ name: safeName, score: Number(score) || 0, timestamp: Date.now() });
+    localStorage.setItem("calculoYermistaChallengeRanking", JSON.stringify(history.slice(-10)));
+  }
+
+  function renderChallengeRanking() {
+    const ranking = getChallengeRanking();
+    const rankingSummary = document.getElementById("rankingSummary");
+
+    if (!rankingSummary) {
+      return;
+    }
+
+    if (!ranking.length) {
+      rankingSummary.innerHTML = '<p class="competition-subtitle">Aún no hay resultados de retos registrados.</p>';
+      return;
+    }
+
+    const bestEntry = [...ranking].sort((a, b) => b.score - a.score)[0];
+    const worstEntry = [...ranking].sort((a, b) => a.score - b.score)[0];
+
+    rankingSummary.innerHTML = `
+      <div class="ranking-card">
+        <h3 class="competition-title">Ranking del reto</h3>
+        <p class="competition-subtitle">Mejor puntaje: <strong>${bestEntry.score}</strong> — ${bestEntry.name}</p>
+        <p class="competition-subtitle">Peor puntaje: <strong>${worstEntry.score}</strong> — ${worstEntry.name}</p>
+      </div>
+    `;
+  }
+
   function getRegisteredUsers() {
     const storedUsers = localStorage.getItem("calculoYermistaRegisteredUsers") || "";
     const users = storedUsers
@@ -773,8 +815,11 @@
     }
 
     updateModuleStats(state.mode, state.score);
+    const playerName = window.getPlayerName ? window.getPlayerName() : "Jugador";
+    saveChallengeRankingEntry(playerName, state.score);
     finalScore.textContent = state.score;
     updateScoreDisplays();
+    renderChallengeRanking();
     showView("result");
   }
 
@@ -1027,6 +1072,9 @@
     if (challengeInfoText) {
       challengeInfoText.textContent = `Esperando a ${state.competitionOpponentName || "el rival"}...`;
     }
+    if (challengePendingText) {
+      challengePendingText.textContent = `Tu invitación para ${state.competitionOpponentName || "el rival"} está en camino. Cuando acepte, comenzará una pantalla nueva de reto.`;
+    }
 
     socket.emit("challenge:create", {
       opponentId: state.competitionOpponentId,
@@ -1036,7 +1084,7 @@
       time: state.competitionTime
     });
 
-    showView("challengeView");
+    showView("challengePending");
   });
 
   cancelCompetitionButton.addEventListener("click", () => {
@@ -1070,6 +1118,13 @@
     showView("lobby");
   });
 
+  pendingBackToLobbyButton.addEventListener("click", () => {
+    state.pendingIncomingChallenge = null;
+    state.competitionOpponentId = null;
+    state.competitionOpponentName = null;
+    showView("lobby");
+  });
+
   recordBackButton.addEventListener("click", () => {
     updateScoreDisplays();
     window.history.back();
@@ -1078,18 +1133,16 @@
   bindEnterSubmit(answerInput);
   bindEnterSubmit(complementInput);
 
-  retryButton.addEventListener("click", () => {
-    if (state.mode) {
-      startCountdown();
-    }
-  });
-
   backToLobbyButton.addEventListener("click", () => {
     state.running = false;
     cancelAnimationFrame(state.animationFrame);
+    state.animationFrame = 0;
+    state.lastTimestamp = 0;
+    state.currentAnswer = null;
     resultInstructions.style.display = "none";
     updateScoreDisplays();
-    window.history.back();
+    showView("lobby");
+    window.history.replaceState({ view: "lobby" }, "", "#lobby");
   });
 
   // Inicializar el primer estado del historial

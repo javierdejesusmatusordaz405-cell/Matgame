@@ -178,10 +178,10 @@
             </div>
           </div>
 
-          <p id="resultInstructions" class="view-instructions">Presiona "Volver al lobby" para elegir otro módulo o revisar tu registro.</p>
+          <p id="resultInstructions" class="view-instructions">Revisa el ranking del reto y regresa al lobby cuando quieras.</p>
+          <div id="rankingSummary"></div>
 
           <div class="action-row">
-            <button id="retryButton" class="primary-action">Reintentar</button>
             <button id="backToLobbyButton" class="secondary-action">Volver al lobby</button>
           </div>
         </div>
@@ -265,6 +265,19 @@
           <div class="action-row">
             <button id="acceptChallengeButton" class="primary-action">Aceptar</button>
             <button id="declineChallengeButton" class="secondary-action">Rechazar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="challengePendingView" class="view">
+        <div class="card">
+          <div class="brand">
+            <h2 class="title">Esperando al rival</h2>
+            <p id="challengePendingText" class="subtitle">Tu invitación ya está en camino. Cuando el rival responda, el reto comenzará en una pantalla nueva.</p>
+          </div>
+
+          <div class="action-row">
+            <button id="pendingBackToLobbyButton" class="secondary-action">Regresar al lobby</button>
           </div>
         </div>
       </div>

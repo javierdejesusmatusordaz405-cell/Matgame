@@ -294,6 +294,14 @@ p {
   text-align: center;
 }
 
+.ranking-card {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(123, 92, 255, 0.16);
+}
+
 .competition-setup {
   display: grid;
   gap: 18px;
